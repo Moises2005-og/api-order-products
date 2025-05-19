@@ -93,9 +93,21 @@ router.post("/order/:userId", async (req, res) => {
         if (!Array.isArray(req.body.items) || req.body.items.length === 0) {
             return res.status(400).json({ message: "Items array is required" });
         }
+
+        const productIds = req.body.items.map(item => item.productId);
+        const products = await prisma.product.findMany({
+            where: { id: { in: productIds } }
+        });
+
+        const total = req.body.items.reduce((sum, item) => {
+            const product = products.find(p => p.id === item.productId);
+            return sum + ((product?.price || 0) * item.quantity);
+        }, 0);
+
         const order = await prisma.order.create({
             data: {
                 userId: req.params.userId,
+                total,
                 items: {
                     create: req.body.items.map(item => ({
                         productId: item.productId,
@@ -103,8 +115,12 @@ router.post("/order/:userId", async (req, res) => {
                     }))
                 }
             },
-            include: { items: true, product: true }
+            include: { 
+                items: { include: { product: true } },
+                user: true
+            }
         });
+
         res.status(201).json(order);
     } catch (err) {
         console.log(err);
@@ -118,7 +134,25 @@ router.get("/orders", async (req, res) => {
     try {
         const orders = await prisma.order.findMany({
             include: {
-                items: true,
+                items: { include: { product: true } },
+                user: true,
+            }
+        });
+        res.status(200).json(orders);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Error fetching orders" });
+    }
+})
+
+router.get("/orders/me/:userId", async (req, res) => {
+    try {
+        const orders = await prisma.order.findMany({
+            where: {
+                userId: req.params.userId
+            },
+            include: {
+                items: { include: { product: true } },
                 user: true,
             }
         });

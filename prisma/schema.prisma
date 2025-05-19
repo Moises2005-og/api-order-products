@@ -20,6 +20,7 @@ model Order {
   user      User        @relation(fields: [userId], references: [id])
   createdAt DateTime    @default(now())
   items     OrderItem[]
+  total     Float   
 }
 
 model OrderItem {
