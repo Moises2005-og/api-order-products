@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken"
 
 const router = express.Router();
 const prisma = new PrismaClient()
+const jwtCode = process.env.JWT_SECRET
 
 // register route
 
@@ -43,19 +44,22 @@ router.post("/login", async(req, res) => {
         }
 
         const validPassword = await bcrypt.compare(req.body.password, user.password)
-        if(!validPassword) {
-            return res.status(401).json({message: "Invalid email or password"})
-        }
-    } catch (err) {
-        console.log(err)
-    }
-})
 
-router.get("/users", async(req, res) => {
-    try {
-        const users = await prisma.user.findMany()
-        res.status(200).json(users)
-    }catch (err) {
+        if(!validPassword) {
+            return res.status(400).json({message: "palavra passe invalida"})
+        }
+
+        const token = jwt.sign({id: user.id}, jwtCode, {expiresIn: "1h"})
+
+        res.status(200).json({
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                token: token
+            },
+        })
+    } catch (err) {
         console.log(err)
     }
 })
