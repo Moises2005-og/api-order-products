@@ -21,6 +21,9 @@ router.get("/users", async(req, res) => {
 
 router.post("/product/:userId", async(req, res) => {
     try {
+        if (!req.body.name || !req.body.price) {
+            return res.status(400).json({ message: "Name and price are required" });
+        }
         const product = await prisma.product.create({
             data: {
                 name: req.body.name,
@@ -56,19 +59,22 @@ router.get("/user/:userId", async(req, res) => {
 
 // delete products route
 
-router.delete("/product/:productId", async(req, res) => {
+router.delete("/order/:orderId", async (req, res) => {
     try {
-        const product = await prisma.product.delete({
-            where: {
-                id: req.params.productId
-            }
-        })
-        res.status(200).json(product)
+        await prisma.orderItem.deleteMany({
+            where: { orderId: req.params.orderId }
+        });
+
+        const order = await prisma.order.delete({
+            where: { id: req.params.orderId }
+        });
+
+        res.status(200).json(order);
     } catch (err) {
-        console.log(err)
-        res.status(500).json({ message: "Error deleting product" })
+        console.log(err);
+        res.status(500).json({ message: "Error deleting order" });
     }
-})
+});
 
 // Delete user route
 
@@ -145,6 +151,8 @@ router.get("/orders", async (req, res) => {
     }
 })
 
+// orders by user route
+
 router.get("/orders/me/:userId", async (req, res) => {
     try {
         const orders = await prisma.order.findMany({
@@ -160,6 +168,23 @@ router.get("/orders/me/:userId", async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "Error fetching orders" });
+    }
+})
+
+
+// delete order route
+
+router.delete("/order/:orderId", async (req, res) => {
+    try {
+        const order = await prisma.order.delete({
+            where: {
+                id: req.params.orderId
+            }
+        });
+        res.status(200).json(order);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Error deleting order" });
     }
 })
 
