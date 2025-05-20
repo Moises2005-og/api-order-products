@@ -110,10 +110,18 @@ router.post("/order/:userId", async (req, res) => {
             return sum + ((product?.price || 0) * item.quantity);
         }, 0);
 
+        const profitMargin = Number(req.body.profitMargin) || 0;
+        const workCost = Number(req.body.workCost) || 0;
+        const costWithWork = total + workCost;
+        const suggestedPrice = costWithWork + (costWithWork * (profitMargin / 100));
+
         const order = await prisma.order.create({
             data: {
                 userId: req.params.userId,
-                total,
+                total: costWithWork,
+                profitMargin,
+                workCost,
+                suggestedPrice,
                 items: {
                     create: req.body.items.map(item => ({
                         productId: item.productId,
