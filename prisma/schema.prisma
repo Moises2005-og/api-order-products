@@ -23,7 +23,8 @@ model Order {
   total          Float
   profitMargin   Float?      
   workCost       Float?      
-  suggestedPrice Float?      
+  suggestedPrice Float?     
+  status         String 
 }
 
 model OrderItem {

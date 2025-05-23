@@ -122,6 +122,7 @@ router.post("/order/:userId", async (req, res) => {
                 profitMargin,
                 workCost,
                 suggestedPrice,
+                status: "pending",
                 items: {
                     create: req.body.items.map(item => ({
                         productId: item.productId,
