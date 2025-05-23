@@ -180,6 +180,25 @@ router.get("/orders/me/:userId", async (req, res) => {
     }
 })
 
+// put order route
+
+router.put("/order/:orderId/finished", async (req, res) => {
+    try {
+        const order = await prisma.order.update({
+            where: {
+                id: req.params.orderId
+            },
+            data: {
+                status: "finished"
+            }
+        });
+        res.status(200).json(order);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Error updating order" });
+    }
+})
+
 // delete order route
 
 router.delete("/order/:orderId", async (req, res) => {

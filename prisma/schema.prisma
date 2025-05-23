@@ -24,7 +24,7 @@ model Order {
   profitMargin   Float?      
   workCost       Float?      
   suggestedPrice Float?     
-  status         String 
+  status String? @default("pending")
 }
 
 model OrderItem {
