@@ -52,4 +52,6 @@ model User {
   password String
   products Product[]
   orders   Order[]
+  otpCode      String?   
+  otpExpiresAt DateTime?
 }
