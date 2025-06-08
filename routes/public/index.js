@@ -51,7 +51,7 @@ router.post("/login", async(req, res) => {
             return res.status(400).json({message: "palavra passe invalida"})
         }
 
-        const token = jwt.sign({id: user.id}, jwtCode, {expiresIn: "1h"})
+        const token = jwt.sign({id: user.id}, jwtCode, {expiresIn: "7d"})
 
         res.status(200).json({
             user: {
