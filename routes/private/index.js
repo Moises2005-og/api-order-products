@@ -38,6 +38,22 @@ router.post("/product/:userId", async(req, res) => {
     }
 })
 
+// get all products by user route
+
+router.get("/products/:userId", async(req, res) => {
+    try {
+        const products = await prisma.product.findMany({
+            where: {
+                userId: req.params.userId
+            }
+        })
+        res.status(200).json(products)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: "Error fetching products" })
+    }
+})
+
 // find one user
 
 router.get("/user/:userId", async(req, res) => {
