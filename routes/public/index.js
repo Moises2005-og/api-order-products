@@ -118,7 +118,7 @@ router.post("/auth/reset-password", async (req, res) => {
     if (!user || user.otpCode !== code || !user.otpExpiresAt || user.otpExpiresAt < new Date()) {
         return res.status(400).json({ message: "OTP inválido ou expirado." });
     }
-    
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
