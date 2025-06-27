@@ -215,6 +215,29 @@ router.put("/order/:orderId/finished", async (req, res) => {
     }
 })
 
+// create a goal
+
+/*router.post("/goal/:userId", async(req, res) =>  {
+    try {
+        const response = await prisma.order.create({
+            data: {
+                title: req.body.title,
+                startDate: req.body.startDate,
+                endDate: req.body.endDate,
+                targetAmount: req.body.targetAmount
+            }
+        })
+
+        res.status(201).json(response)
+
+    } catch (eror){
+        console.log(error)
+        res.status(501).json({message: "Internal Server Error"})
+    } finally {
+        console.log("")
+    }
+})*/
+
 // delete order route
 
 router.delete("/order/:orderId", async (req, res) => {
