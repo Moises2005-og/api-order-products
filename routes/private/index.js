@@ -217,12 +217,15 @@ router.put("/order/:orderId/finished", async (req, res) => {
 
 // create a goal
 
-/*router.post("/goal/:userId", async(req, res) =>  {
+router.post("/goal/:userId", async(req, res) =>  {
+    const now = new Date().toISOString();
+
     try {
-        const response = await prisma.order.create({
+        const response = await prisma.goal.create({
             data: {
+                userId: req.params.userId,
                 title: req.body.title,
-                startDate: req.body.startDate,
+                startdDate: now,
                 endDate: req.body.endDate,
                 targetAmount: req.body.targetAmount
             }
@@ -230,13 +233,30 @@ router.put("/order/:orderId/finished", async (req, res) => {
 
         res.status(201).json(response)
 
-    } catch (eror){
+    } catch (error){
         console.log(error)
         res.status(501).json({message: "Internal Server Error"})
     } finally {
         console.log("")
     }
-})*/
+})
+
+// get all goals by user
+
+router.get("/goals/me/:userId", async(req, res) => {
+    try {
+        const goals = await prisma.goal.findMany({
+            where: {
+                userId: req.params.userId
+            }
+        })
+
+        res.status(200).json(goals);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "Error fetching goals" });
+    }
+})
 
 // delete order route
 
