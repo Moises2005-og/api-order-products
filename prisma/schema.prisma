@@ -25,6 +25,7 @@ model Order {
   workCost       Float?      
   suggestedPrice Float?     
   status String? @default("pending")
+  updatedAt DateTime?
 }
 
 model OrderItem {

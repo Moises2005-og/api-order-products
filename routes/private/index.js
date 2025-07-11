@@ -205,7 +205,8 @@ router.put("/order/:orderId/finished", async (req, res) => {
                 id: req.params.orderId
             },
             data: {
-                status: "finished"
+                status: "finished",
+                updatedAt: new Date().toISOString()
             }
         });
         res.status(200).json(order);
